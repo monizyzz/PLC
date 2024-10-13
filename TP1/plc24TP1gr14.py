@@ -6,9 +6,16 @@ import re
 with open('processos.txt', 'r') as f:
     linhas = f.readlines()
     
+# Remover linhas com registos repetidos e manter a ordem
+linhas_sem_repetidos = []
+linhas_vistas = set()
+for linha in linhas:
+    if linha not in linhas_vistas:
+        linhas_sem_repetidos.append(linha)
+        linhas_vistas.add(linha)
+    
 # Abrir/criar o ficheiro, 'processos-filtrados.txt', escrever as linhas sem registos repetidos
 with open('processos-filtrados.txt', 'w') as f:
-    linhas_sem_repetidos = list(set(linhas))
     f.writelines(linhas_sem_repetidos)
 
 
@@ -118,7 +125,7 @@ import json
 
 def imprimir_primeiro_registo_json():
     # Extrair o primeiro registro
-    primeiro_registo = linhas_sem_repetidos[0]
+    primeiro_registo = linhas_sem_repetidos[1]
     partes = primeiro_registo.split("::")
     
     registo_dict = {
@@ -131,7 +138,7 @@ def imprimir_primeiro_registo_json():
     }
     
     # Converter o dicionário para JSON e escrever no 'primeiro_registo.json'
-    with open('primeiro_registo.json', 'w') as f:
+    with open('primeiro-registo.json', 'w') as f:
         json.dump(registo_dict, f, indent=4, ensure_ascii=False)
         
 imprimir_primeiro_registo_json()
