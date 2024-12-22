@@ -1,0 +1,3 @@
+a: INT = 0;
+b: STR = "Ola";
+c: FLOAT = 10.9;
