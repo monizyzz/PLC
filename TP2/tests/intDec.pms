@@ -1,1 +1,1 @@
-const varrr: INT = 20;
+const arr: Array<INT> = [0,1,2,3];

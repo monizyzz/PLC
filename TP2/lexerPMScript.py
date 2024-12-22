@@ -4,6 +4,7 @@ import sys
 class LexerPMScript(object):
     def __init__(self, debug = 0, optimize = 0, reflags = 0):
         self.lexer = lex.lex(module=self, debug=debug, optimize=optimize, reflags=reflags)
+        self.lexer.lineno = 1
     
     tokens = [
         'INTVALUE',
@@ -13,6 +14,12 @@ class LexerPMScript(object):
         'COLON',
         'EQUALS',
         'SEMICOLON',
+        'OPENBRACKET',
+        'CLOSEBRACKET',
+        'OPENANGLE',
+        'CLOSEANGLE',
+        'COMMA',
+        'NEWLINE',
     ]
     
     RESERVED = {
@@ -21,8 +28,9 @@ class LexerPMScript(object):
         'STR': 'STR',
         'const': 'CONST',
         'let': 'LET',
+        'Array': 'ARRAY',
     }
-    
+        
     tokens += list(RESERVED.values())
     
     t_INT = r'INT'
@@ -31,11 +39,20 @@ class LexerPMScript(object):
     
     t_INTVALUE = r'\d+'
     t_FLOATVALUE = r'\d+\.\d+'
-    t_STRINGVALUE = r'\".*\"'
+    t_STRINGVALUE = r'\"(^\"|[^"])*\"'
 
+    t_COMMA = r'\,'
+    t_OPENBRACKET = r'\['
+    t_CLOSEBRACKET = r'\]'
+    t_OPENANGLE = r'\<'
+    t_CLOSEANGLE = r'\>'
     t_COLON = r'\:'
     t_EQUALS = r'\='
     t_SEMICOLON = r'\;'
+    
+    def t_ARRAY(self, t):
+        r'Array(?=<[INT|FLOAT|STR]>)'
+        return t
     
     def t_CONST(self, t):
         r'const(?=\s)'
@@ -50,7 +67,13 @@ class LexerPMScript(object):
         t.type = self.RESERVED.get(t.value, 'ID')
         return t
     
-    t_ignore = ' \t\n'
+    def t_NEWLINE(self, t):
+        r'\n+'
+        t.lexer.lineno += len(t.value)
+        t.type = "NEWLINE"
+        return t
+    
+    t_ignore = ' \t'
     
     t_error = lambda self, t: print(f"Illegal character {t.value[0]} at line {t.lineno}")
         
