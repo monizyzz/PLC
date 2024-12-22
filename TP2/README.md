@@ -11,9 +11,9 @@ Quisemos nos inspirar na linguagem TypeScript e decidimos fazer a linguagem PMSc
 #### **PMScript**
 
 ```ts
-a: INT = 0;
-b: STR = "Olá";
-c: FLOAT = 10.9;
+const a: INT = 0;
+let b: STR = "Olá";
+const c: FLOAT = 10.9;
 ```
 
 #### **GIC**
@@ -24,7 +24,10 @@ Declarations      : IntDeclaration Declarations
                   | FloatDeclaration Declarations
                   | Empty
 
-IntDeclaration    : ID ':' INT '=' INTVALUE ';'
-StringDeclaration : ID ':' STR '=' STRVALUE ';'
-FloatDeclaration  : ID ':' FLOAT '=' FLOATVALUE ';'
+MutationType      : CONST
+                  | LET
+
+IntDeclaration    : MutationType ID ':' INT '=' INTVALUE ';'
+StringDeclaration : MutationType ID ':' STR '=' STRVALUE ';'
+FloatDeclaration  : MutationType ID ':' FLOAT '=' FLOATVALUE ';'
 ```

@@ -19,6 +19,8 @@ class LexerPMScript(object):
         'INT': 'INT',
         'FLOAT': 'FLOAT',
         'STR': 'STR',
+        'const': 'CONST',
+        'let': 'LET',
     }
     
     tokens += list(RESERVED.values())
@@ -34,6 +36,14 @@ class LexerPMScript(object):
     t_COLON = r'\:'
     t_EQUALS = r'\='
     t_SEMICOLON = r'\;'
+    
+    def t_CONST(self, t):
+        r'const(?=\s)'
+        return t
+
+    def t_LET(self, t):
+        r'let(?=\s)'
+        return t
 
     def t_ID(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'

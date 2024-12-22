@@ -3,6 +3,18 @@ import ast
 import ply.yacc as yacc
 import sys
 
+# Will check if a variable name is already defined
+def checkIfVariableAlreadyExists(varName):
+    if varName in parser.vars["const"]:
+        return "const"
+    elif varName in parser.vars["let"]:
+        return "let"
+    return None
+
+def printError(text):
+    RED = "\033[31m"  # ANSI escape code for red
+    RESET = "\033[0m"  # Reset to default color
+    print(f"{RED}{text}{RESET}")
 
 
 # ---------------- Programa ----------------
@@ -22,26 +34,44 @@ def p_Declarations(p):
         p[0] = ""
     
 # ---------------- VarDeclaration ----------------
+def p_MutationType(p):
+    """MutationType : CONST
+                    | LET"""
+    p[0] = p[1]
+
 def p_IntDeclaration(p):
-    """IntDeclaration : ID COLON INT EQUALS INTVALUE SEMICOLON"""
-    parser.vars[p[1]] = int(p[5])
+    """IntDeclaration : MutationType ID COLON INT EQUALS INTVALUE SEMICOLON"""
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]][p[2]] = int(p[6]) 
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
     p[0] = f"pushi 0\n" 
     
 def p_StringDeclaration(p):
-    """StringDeclaration : ID COLON STR EQUALS STRINGVALUE SEMICOLON"""
-    parser.vars[p[1]] = "".join(p[5].strip('"'))
+    """StringDeclaration : MutationType ID COLON STR EQUALS STRINGVALUE SEMICOLON"""
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]][p[2]] = "".join(p[6].strip('"')) # Save string without quotes
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
     p[0] = f"pushi 0\n" 
     
     
 def p_FloatDeclaration(p):
-    """FloatDeclaration : ID COLON FLOAT EQUALS FLOATVALUE SEMICOLON"""
-    parser.vars[p[1]] = float(p[5])
+    """FloatDeclaration : MutationType ID COLON FLOAT EQUALS FLOATVALUE SEMICOLON"""
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]][p[2]] = float(p[6])
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
     p[0] = f"pushi 0\n"
 
 # ---------------  Empty  ---------------- #
 def p_Empty(p):
     "Empty : "
     pass
+
 
 def p_error(p):
     print(f"Syntax error at line {p.lineno}")
@@ -55,7 +85,10 @@ lexer = LexerPMScript()
 parser = yacc.yacc(start='ProgramInit')
 parser.success = True
 parser.assembly = ""
-parser.vars = {}
+parser.vars = {
+    "const": {},
+    "let": {},
+}
 
 
 # Read file

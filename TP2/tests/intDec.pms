@@ -1,1 +1,1 @@
-varrr: INT = 20;
+const varrr: INT = 20;
