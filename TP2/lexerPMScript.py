@@ -11,15 +11,6 @@ class LexerPMScript(object):
         'FLOATVALUE',
         'STRINGVALUE',
         'ID',
-        'COLON',
-        'EQUALS',
-        'SEMICOLON',
-        'OPENBRACKET',
-        'CLOSEBRACKET',
-        'OPENANGLE',
-        'CLOSEANGLE',
-        'COMMA',
-        'NEWLINE',
     ]
     
     RESERVED = {
@@ -40,15 +31,8 @@ class LexerPMScript(object):
     t_INTVALUE = r'\d+'
     t_FLOATVALUE = r'\d+\.\d+'
     t_STRINGVALUE = r'\"(^\"|[^"])*\"'
-
-    t_COMMA = r'\,'
-    t_OPENBRACKET = r'\['
-    t_CLOSEBRACKET = r'\]'
-    t_OPENANGLE = r'\<'
-    t_CLOSEANGLE = r'\>'
-    t_COLON = r'\:'
-    t_EQUALS = r'\='
-    t_SEMICOLON = r'\;'
+    
+    literals = [':', '=', ';', '[', ']', '<', '>', ',']
     
     def t_ARRAY(self, t):
         r'Array(?=<[INT|FLOAT|STR]>)'
@@ -70,7 +54,6 @@ class LexerPMScript(object):
     def t_NEWLINE(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
-        t.type = "NEWLINE"
         return t
     
     t_ignore = ' \t'

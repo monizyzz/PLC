@@ -22,7 +22,7 @@ def printError(text):
 
 # ---------------- Programa ----------------
 def p_ProgramInit(p):
-    "ProgramInit : Declarations"
+    """ProgramInit : Declarations Instructions"""
     parser.assembly = p[1] + "start\nstop\n"
 
 
@@ -40,7 +40,7 @@ def p_Declarations(p):
 # ------------------------------------------------------------  Int Declaration
 
 def p_IntDeclaration(p):
-    """IntDeclaration : MutationType ID COLON INT EQUALS INTVALUE SEMICOLON"""
+    """IntDeclaration : MutationType ID ':' INT '=' INTVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
         parser.vars[p[1]][p[2]] = int(p[6]) 
     else:
@@ -51,7 +51,7 @@ def p_IntDeclaration(p):
 # ------------------------------------------------------------  String Declaration
     
 def p_StringDeclaration(p):
-    """StringDeclaration : MutationType ID COLON STR EQUALS STRINGVALUE SEMICOLON"""
+    """StringDeclaration : MutationType ID ':' STR '=' STRINGVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
         parser.vars[p[1]][p[2]] = "".join(p[6].strip('"')) # Save string without quotes
     else:
@@ -62,7 +62,7 @@ def p_StringDeclaration(p):
 # ------------------------------------------------------------  Float Declaration  
     
 def p_FloatDeclaration(p):
-    """FloatDeclaration : MutationType ID COLON FLOAT EQUALS FLOATVALUE SEMICOLON"""
+    """FloatDeclaration : MutationType ID ':' FLOAT '=' FLOATVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
         parser.vars[p[1]][p[2]] = float(p[6])
     else:
@@ -74,9 +74,9 @@ def p_FloatDeclaration(p):
 # ------------------------------------------------------------  Array Declaration
 
 def p_ArrayDeclaration(p):
-    """ArrayDeclaration : MutationType ID COLON ARRAY OPENANGLE INT CLOSEANGLE EQUALS OPENBRACKET ArrayIntDeclaration CLOSEBRACKET SEMICOLON
-                        | MutationType ID COLON ARRAY OPENANGLE FLOAT CLOSEANGLE EQUALS OPENBRACKET ArrayFloatDeclaration CLOSEBRACKET SEMICOLON
-                        | MutationType ID COLON ARRAY OPENANGLE STR CLOSEANGLE EQUALS OPENBRACKET ArrayStringDeclaration CLOSEBRACKET SEMICOLON"""
+    """ArrayDeclaration : MutationType ID ':' ARRAY '<' INT '>' '=' '[' ArrayIntDeclaration ']' ';'
+                        | MutationType ID ':' ARRAY '<' FLOAT '>' '=' '[' ArrayFloatDeclaration ']' ';'
+                        | MutationType ID ':' ARRAY '<' STR '>' '=' '[' ArrayStringDeclaration ']' ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
         parser.vars[p[1]][p[2]] = p[10]
     else:
@@ -85,7 +85,7 @@ def p_ArrayDeclaration(p):
     p[0] = f"pushi 0\n"
     
 def p_ArrayIntDeclarationAux(p):
-    """ArrayIntDeclaration : INTVALUE COMMA ArrayIntDeclaration
+    """ArrayIntDeclaration : INTVALUE ',' ArrayIntDeclaration
                            | INTVALUE
                            | Empty"""
     if len(p) == 4:
@@ -94,7 +94,7 @@ def p_ArrayIntDeclarationAux(p):
         p[0] = [int(p[1])]
         
 def p_ArrayFloatDeclarationAux(p):
-    """ArrayFloatDeclaration : FLOATVALUE COMMA ArrayFloatDeclaration
+    """ArrayFloatDeclaration : FLOATVALUE ',' ArrayFloatDeclaration
                              | FLOATVALUE
                              | Empty"""
     if len(p) == 4:
@@ -103,7 +103,7 @@ def p_ArrayFloatDeclarationAux(p):
         p[0] = [float(p[1])]
 
 def p_ArrayStringDeclarationAux(p):
-    """ArrayStringDeclaration : STRINGVALUE COMMA ArrayStringDeclaration
+    """ArrayStringDeclaration : STRINGVALUE ',' ArrayStringDeclaration
                               | STRINGVALUE
                               | Empty"""
     if len(p) == 4:

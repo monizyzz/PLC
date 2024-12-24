@@ -22,33 +22,149 @@ const arrString: Array<STR> = ["olá!", "tudo bem?"]
 #### **GIC**
 
 ```ts
-Declarations           : IntDeclaration "\n" Declarations
-                       | StringDeclaration "\n" Declarations
-                       | FloatDeclaration "\n" Declarations
-                       | ArrayDeclaration "\n" Declarations
-                       | Empty
+ProgramInit            : Declarations Instructions
+                       | Instructions
+                       | Declarations
+
+Declarations           : Declaration Declarations
+                       | Declaration
+
+Declaration            : IntDeclaration
+                       | FloatDeclaration
+                       | StringDeclaration
+                       | ArrayDeclaration
    
 MutationType           : CONST
                        | LET
    
 // Como temos que garantir a type safety, não podemos fazer recursividade nesse caso
-IntDeclaration         : MutationType ID ':' INT '=' INTVALUE ';'
-StringDeclaration      : MutationType ID ':' STR '=' STRVALUE ';'
-FloatDeclaration       : MutationType ID ':' FLOAT '=' FLOATVALUE ';'
+IntDeclaration         : MutationType ID ':' 'INT' '=' INTVALUE ';'
+                       | ID ':' 'INT' '=' INTVALUE ';'
+                       | ID ':' 'INT' ';'
 
-ArrayDeclaration       : MutationType ID ':' 'Array' '<' INT '>' '=' '[' ArrayIntDeclaration ']' ';'
-                       | MutationType ID ':' 'Array' '<' STR '>' '=' '[' ArrayFloatDeclaration ']' ';'
-                       | MutationType ID ':' 'Array' '<' FLOAT '>' '=' '[' ArrayStringDeclaration ']' ';'
+FloatDeclaration       : MutationType ID ':' 'FLOAT' '=' FLOATVALUE ';'
+                       | ID ':' 'FLOAT' '=' FLOATVALUE ';'
+                       | ID ':' 'FLOAT' ';'
 
-ArrayIntDeclaration    : INTVALUE COMMA ArrayIntDeclaration
+StringDeclaration      : MutationType ID ':' 'STR' '=' STRVALUE ';'
+                       | ID ':' 'STR' '=' STRVALUE ';'
+
+ArrayDeclaration       : CONST ID ':' 'Array' '<' 'INT' '>' '=' '[' ArrayIntDeclaration ']' ';'
+                       | CONST ID ':' 'Array' '<' 'FLOAT' '>' '=' '[' ArrayStringDeclaration ']' ';'
+                       | CONST ID ':' 'Array' '<' 'STR' '>' '=' '[' ArrayFloatDeclaration ']' ';'
+
+ArrayIntDeclaration    : INTVALUE ',' ArrayIntDeclaration
                        | INTVALUE
-                       | Empty
 
-ArrayFloatDeclaration  : FLOATVALUE COMMA ArrayFloatDeclaration
+ArrayFloatDeclaration  : FLOATVALUE ',' ArrayFloatDeclaration
                        | FLOATVALUE
-                       | Empty
 
-ArrayStringDeclaration : STRVALUE COMMA ArrayStringDeclaration
+ArrayStringDeclaration : STRVALUE ',' ArrayStringDeclaration
                        | STRVALUE
-                       | Empty
+
+
+
+Instructions           : Instruction Instructions
+                       | Instruction
+
+Instruction            : Update ';'
+                       | PRINT '(' Expression ')' ';'
+                       | PRINT '(' ExpLogic ')' ';'
+                       | PRINT '(' ExpressionFloat ')' ';'
+                       | PRINT '(' STRVALUE ')' ';'
+                       | PRINTLN '(' Expression ')' ';'
+                       | PRINTLN '(' ExpLogic ')' ';'
+                       | PRINTLN '(' ExpressionFloat ')' ';'
+                       | PRINTLN '(' STRVALUE ')' ';'
+                       | IF Boolean '{' Instructions '}' Else
+                       | FOR '(' Update ';' Boolean ';' Update ')' '{' Instructions '}'
+                       | FOR '(' Empty ';' Boolean ';' Update ')' '{' Instructions '}'
+                       | WHILE '(' Boolean ')' '{' Instructions '}' 
+
+Else                   : ELSE '{' Instructions '}'
+                       | ELSE IF '(' Boolean ')' '{' Instructions '}' Else
+
+Update                 : VARINT '=' Expression
+                       | VARFLOAT '=' ExpressionFloat
+                       | VARSTRING '=' STRVALUE
+                       | VARINT PP
+                       | VARINT MM
+                       | VARFLOAT PP
+                       | VARFLOAT MM
+                       | VARARRAY '[' Expression ']' '=' Expression
+                       | VARFLOAT '=' Expression
+                       | VARINT '=' ExpressionFloat
+
+Boolean                : Expression
+                       | ExpLogic
+
+STRVALUE               : VARSTRING
+                       | Line
+                       | INPUT '(' ')'
+
+Empty                  : 
+
+Expression             : Expression '+' Expression
+                       | Expression '-' Expression
+                       | Expression '*' Expression
+                       | Expression '/' Expression
+                       | Expression '%' Expression
+                       | Value
+                       | '(' Expression ')'
+
+ExpressionFloat        : ExpressionFloat '+' ExpressionFloat
+                       | ExpressionFloat '-' ExpressionFloat
+                       | ExpressionFloat '*' ExpressionFloat
+                       | ExpressionFloat '/' ExpressionFloat
+                       | Expression '+' ExpressionFloat
+                       | Expression '-' ExpressionFloat
+                       | Expression '*' ExpressionFloat
+                       | Expression '/' ExpressionFloat
+                       | ExpressionFloat '+' Expression
+                       | ExpressionFloat '-' Expression
+                       | ExpressionFloat '*' Expression
+                       | ExpressionFloat '/' Expression
+                       | ValueFloat
+                       | '(' ExpressionFloat ')'
+
+Value                  : VARINT 
+                       | VARARRAY '[' Expression ']'
+                       | INTVALUE
+                       | INT '(' STRVALUE ')'
+                       | INT '(' ExpressionFloat ')'
+
+
+ValueFloat             : VARFLOAT
+                       | FLOATVALUE
+                       | FLOAT '(' STRVALUE ')'
+                       | FLOAT '(' Expression ')'
+
+ExpLogic               : Expression EQUAL Expression
+                       | Expression DIFF Expression
+                       | Expression '>' Expression
+                       | Expression '<' Expression
+                       | Expression GEQUAL Expression
+                       | Expression LEQUAL Expression
+                       | ExpressionFloat EQUAL ExpressionFloat
+                       | ExpressionFloat DIFF ExpressionFloat
+                       | ExpressionFloat '>' ExpressionFloat
+                       | ExpressionFloat '<' ExpressionFloat
+                       | ExpressionFloat GEQUAL ExpressionFloat
+                       | ExpressionFloat LEQUAL ExpressionFloat
+                       | Expression EQUAL ExpressionFloat
+                       | Expression DIFF ExpressionFloat
+                       | Expression '>' ExpressionFloat
+                       | Expression '<' ExpressionFloat
+                       | Expression GEQUAL ExpressionFloat
+                       | Expression LEQUAL ExpressionFloat
+                       | ExpressionFloat EQUAL Expression
+                       | ExpressionFloat DIFF Expression
+                       | ExpressionFloat '>' Expression
+                       | ExpressionFloat '<' Expression
+                       | ExpressionFloat GEQUAL Expression
+                       | ExpressionFloat LEQUAL Expression
+                       | '(' ExpLogic ')'
+                       | ExpLogic AND ExpLogic
+                       | ExpLogic OR ExpLogic
+                       | NOT ExpLogic
 ```
