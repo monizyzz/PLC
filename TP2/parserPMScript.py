@@ -22,15 +22,15 @@ def printError(text):
 
 # ---------------- Programa ----------------
 def p_ProgramInit(p):
-    """ProgramInit : Declarations Instructions"""
+    """ProgramInit : Declarations"""
     parser.assembly = p[1] + "start\nstop\n"
 
 
 def p_Declarations(p):
-    """Declarations : IntDeclaration Newline Declarations
-                    | StringDeclaration Newline Declarations
-                    | FloatDeclaration Newline Declarations
-                    | ArrayDeclaration Newline Declarations
+    """Declarations : IntDeclaration Declarations
+                    | StringDeclaration Declarations
+                    | FloatDeclaration Declarations
+                    | ArrayDeclaration Declarations
                     | Empty"""
     if len(p) == 3:
         p[0] = str(p[1]) + str(p[2])
@@ -124,12 +124,6 @@ def p_MutationType(p):
     """MutationType : CONST
                     | LET"""
     p[0] = p[1]
-
-def p_Newline(p):
-    """Newline : NEWLINE
-               | Empty"""
-    p.parser.lineno += 1
-    p[0] = ''
 
 # ------------------------------------------------------------  Error
 

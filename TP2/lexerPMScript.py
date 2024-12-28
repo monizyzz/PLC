@@ -56,7 +56,7 @@ class LexerPMScript(object):
         t.lexer.lineno += len(t.value)
         return t
     
-    t_ignore = ' \t'
+    t_ignore = ' \t\n'
     
     t_error = lambda self, t: print(f"Illegal character {t.value[0]} at line {t.lineno}")
         
