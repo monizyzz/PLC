@@ -5,13 +5,46 @@ import sys
 
 # ------------------------------------------------------------- Auxiliar Functions
 
+def is_float(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
 # Will check if a variable name is already defined
+# TODO: Make this function more efficient
 def checkIfVariableAlreadyExists(varName):
-    if varName in parser.vars["const"]:
+    if varName in parser.vars["const"]["INT"]:
         return "const"
-    elif varName in parser.vars["let"]:
+    elif varName in parser.vars["const"]["STR"]:
+        return "const"
+    elif varName in parser.vars["const"]["FLOAT"]:
+        return "const"
+    elif varName in parser.vars["let"]["INT"]:
         return "let"
-    return None
+    elif varName in parser.vars["let"]["STR"]:
+        return "let"
+    elif varName in parser.vars["let"]["FLOAT"]:
+        return "let"
+    else:
+        return None
+    
+def getVariableType(varName):
+    if varName in parser.vars["const"]["INT"]:
+        return "INT"
+    elif varName in parser.vars["const"]["STR"]:
+        return "STR"
+    elif varName in parser.vars["const"]["FLOAT"]:
+        return "FLOAT"
+    elif varName in parser.vars["let"]["INT"]:
+        return "INT"
+    elif varName in parser.vars["let"]["STR"]:
+        return "STR"
+    elif varName in parser.vars["let"]["FLOAT"]:
+        return "FLOAT"
+    else:
+        return None
 
 # Used for logging errors in red
 def printError(text):
@@ -19,10 +52,15 @@ def printError(text):
     RESET = "\033[0m"  # Reset to default color
     print(f"{RED}{text}{RESET}")
 
+def printSuccess(text):
+    GREEN = "\033[32m"  # ANSI escape code for green
+    RESET = "\033[0m"  # Reset to default color
+    print(f"{GREEN}{text}{RESET}")
+
 
 # ---------------- Programa ----------------
 def p_ProgramInit(p):
-    """ProgramInit : Declarations"""
+    """ProgramInit : Declarations Atributions"""
     parser.assembly = p[1] + "start\nstop\n"
 
 
@@ -42,7 +80,7 @@ def p_Declarations(p):
 def p_IntDeclaration(p):
     """IntDeclaration : MutationType ID ':' INT '=' INTVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
-        parser.vars[p[1]][p[2]] = int(p[6]) 
+        parser.vars[p[1]]['INT'][p[2]] = int(p[6]) 
     else:
         parser.success = False
         printError("Error: Variable was already defined before")
@@ -53,7 +91,7 @@ def p_IntDeclaration(p):
 def p_StringDeclaration(p):
     """StringDeclaration : MutationType ID ':' STR '=' STRINGVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
-        parser.vars[p[1]][p[2]] = "".join(p[6].strip('"')) # Save string without quotes
+        parser.vars[p[1]]['STR'][p[2]] = "".join(p[6].strip('"')) # Save string without quotes
     else:
         parser.success = False
         printError("Error: Variable was already defined before")
@@ -64,7 +102,7 @@ def p_StringDeclaration(p):
 def p_FloatDeclaration(p):
     """FloatDeclaration : MutationType ID ':' FLOAT '=' FLOATVALUE ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
-        parser.vars[p[1]][p[2]] = float(p[6])
+        parser.vars[p[1]]['FLOAT'][p[2]] = float(p[6])
     else:
         parser.success = False
         printError("Error: Variable was already defined before")
@@ -78,7 +116,7 @@ def p_ArrayDeclaration(p):
                         | MutationType ID ':' ARRAY '<' FLOAT '>' '=' '[' ArrayFloatDeclaration ']' ';'
                         | MutationType ID ':' ARRAY '<' STR '>' '=' '[' ArrayStringDeclaration ']' ';'"""
     if checkIfVariableAlreadyExists(p[2]) is None:
-        parser.vars[p[1]][p[2]] = p[10]
+        parser.vars[p[1]][p[6]][p[2]] = p[10]
     else:
         parser.success = False
         printError("Error: Variable was already defined before")
@@ -111,6 +149,55 @@ def p_ArrayStringDeclarationAux(p):
     else:
         p[0] = [p[1].strip('"')]
 
+# ------------------------------------------------------------  Atributions
+
+def p_Atributions(p):
+    """Atributions : NormalAtribution Atributions
+                   | Empty"""
+    if len(p) == 3:
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = ""
+    
+def p_NormalAtribution(p):
+    """NormalAtribution : ID '=' INTVALUE ';'
+                        | ID '=' STRINGVALUE ';'
+                        | ID '=' FLOATVALUE ';'"""
+    mutationType = checkIfVariableAlreadyExists(p[1])
+    varType = getVariableType(p[1])
+    
+    # Check if variable was defined before
+    if mutationType is not None:
+        
+        # Check if variable is a constant, if so, it cannot be changed and an error is raised
+        if mutationType == "const":
+            parser.success = False
+            printError("Error: Cannot change value of a constant variable")
+        else:
+            
+            # Check if variable types match (int, str, float)
+            # TODO: Do this for arrays
+            # TODO: Do vm code for ints and floats
+            if varType == "INT" and is_float(p[3]):
+                parser.vars["let"][varType][p[1]] = int(float(p[3])) # Round float to int if necessary
+
+            elif varType == "STR" and p[3].startswith('"') and p[3].endswith('"'):
+                parser.vars["let"][varType][p[1]] = p[3].strip('"')
+
+            elif varType == "FLOAT" and is_float(p[3]):
+                parser.vars["let"][varType][p[1]] = p[3]
+                
+            else:
+                parser.success = False
+                printError("Atribution Error: Variable types do not match.")
+
+            printSuccess(f"Atrib -> {p[1]} = {p[3]}")
+            p[0] = f"pop {p[1]}\n"
+
+    # If variable was not defined before, raise an error
+    else:
+        parser.success = False
+        printError("Error: Variable was not defined before")
 
 # ------------------------------------------------------------  Empty 
 
@@ -141,8 +228,16 @@ parser.lineno = 1
 parser.success = True
 parser.assembly = ""
 parser.vars = {
-    "const": {},
-    "let": {},
+    "const": {
+        "INT": {},
+        "STR": {},
+        "FLOAT": {},
+        },
+    "let": {
+        "INT": {},
+        "STR": {},
+        "FLOAT": {},
+    },
 }
 
 

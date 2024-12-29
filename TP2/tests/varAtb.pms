@@ -1,0 +1,4 @@
+let x1: INT = 0;
+let x2: FLOAT = 0.2;
+
+x1 = 10;

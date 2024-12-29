@@ -10,6 +10,8 @@ class LexerPMScript(object):
         'INTVALUE',
         'FLOATVALUE',
         'STRINGVALUE',
+        'INC',
+        'DEC',
         'ID',
     ]
     
@@ -28,6 +30,8 @@ class LexerPMScript(object):
     t_STR = r'STR'
     t_FLOAT = r'FLOAT'
     
+    t_INC = r'\+\+'
+    t_DEC = r'--'
     t_INTVALUE = r'\d+'
     t_FLOATVALUE = r'\d+\.\d+'
     t_STRINGVALUE = r'\"(^\"|[^"])*\"'

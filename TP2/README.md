@@ -61,9 +61,46 @@ ArrayFloatDeclaration  : FLOATVALUE ',' ArrayFloatDeclaration
 
 ArrayStringDeclaration : STRVALUE ',' ArrayStringDeclaration
                        | STRVALUE
+```
 
+___
 
+### 2.2 - Atribuição de variáveis
 
+#### **PMScript**
+
+```ts
+let a: INT = 10;
+let b: STR = "Olá!";
+
+// A variável b é uma variável "LET", então podemos modificar seu valor
+b = "Tchau!";
+
+// Como a variável a é um INT, caso seja atribuido um valor float, a será arredondado para o inteiro mais próximo
+a = 20.3;
+// output --> a = 20; 
+```
+
+#### **GIC**
+
+```ts
+Atributions            : NormalAtribution Atributions
+                       | IncDec Atributions
+                       | Empty
+
+NormalAtribution       : ID '=' INTVALUE ';'
+                       | ID '=' STRVALUE ';'
+                       | ID '=' FLOATVALUE ';'
+
+IncDec                 | ID INC ';'
+                       | ID DEC ';'
+```
+
+___
+
+### 2.3 - Instruções
+
+```ts
 Instructions           : Instruction Instructions
                        | Instruction
 
