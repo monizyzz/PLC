@@ -60,7 +60,7 @@ def printSuccess(text):
 
 # ---------------- Programa ----------------
 def p_ProgramInit(p):
-    """ProgramInit : Declarations Atributions"""
+    """ProgramInit : Declarations Attributions"""
     parser.assembly = p[1] + "start\nstop\n"
 
 
@@ -149,18 +149,18 @@ def p_ArrayStringDeclarationAux(p):
     else:
         p[0] = [p[1].strip('"')]
 
-# ------------------------------------------------------------  Atributions
+# ------------------------------------------------------------  Attributions
 
 def p_Atributions(p):
-    """Atributions : NormalAtribution Atributions
+    """Attributions : NormalAttribution Attributions
                    | Empty"""
     if len(p) == 3:
         p[0] = p[1] + p[2]
     else:
         p[0] = ""
     
-def p_NormalAtribution(p):
-    """NormalAtribution : ID '=' INTVALUE ';'
+def p_NormalAttribution(p):
+    """NormalAttribution : ID '=' INTVALUE ';'
                         | ID '=' STRINGVALUE ';'
                         | ID '=' FLOATVALUE ';'"""
     mutationType = checkIfVariableAlreadyExists(p[1])
