@@ -84,15 +84,15 @@ a = 20.3;
 #### **GIC**
 
 ```ts
-Attributions            : NormalAttribution Attributions
-                       | IncDec Attributions
+Attributions           : NormalAttribution Attributions
+                       | IncDecAttribution Attributions
                        | Empty
 
-NormalAttribution       : ID '=' INTVALUE ';'
+NormalAttribution      : ID '=' INTVALUE ';'
                        | ID '=' STRVALUE ';'
                        | ID '=' FLOATVALUE ';'
 
-IncDec                 | ID INC ';'
+IncDecAttribution      | ID INC ';'
                        | ID DEC ';'
 ```
 
