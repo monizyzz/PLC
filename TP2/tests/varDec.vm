@@ -1,8 +1,32 @@
+pushi 1000
+pushs Ola
+pushf 10.9
+pushi 3
+STOREG arrayInt_0
+pushi 2
+STOREG arrayInt_1
+pushi 1
+STOREG arrayInt_2
 pushi 0
-pushi 0
-pushi 0
-pushi 0
-pushi 0
-pushi 0
+STOREG arrayInt_3
+pushf 322.12
+STOREG arrayFloat_0
+pushf 199.212
+STOREG arrayFloat_1
+pushf 10.9
+STOREG arrayFloat_2
+pushs Olá!
+STOREG arrayString_0
+pushs Tudo Bem?
+STOREG arrayString_1
+"Por favor dê um valor para essa variável: " READ
+ATOI
+STOREG inputtext
 start
+PUSHG 11.9
+PUSHI 1
+ADD
+STOREG c
+pushi 200
+STOREG a
 stop

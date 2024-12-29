@@ -22,6 +22,8 @@ class LexerPMScript(object):
         'const': 'CONST',
         'let': 'LET',
         'Array': 'ARRAY',
+        'console.input': 'INPUT',
+        ';': 'SEMICOLON',
     }
         
     tokens += list(RESERVED.values())
@@ -36,7 +38,13 @@ class LexerPMScript(object):
     t_FLOATVALUE = r'\d+\.\d+'
     t_STRINGVALUE = r'\"(^\"|[^"])*\"'
     
-    literals = [':', '=', ';', '[', ']', '<', '>', ',']
+    
+    literals = [':', '=', '[', ']', '<', '>', ',', '(', ')']
+
+    def t_SEMICOLON(self, t):
+        r';'
+        t.lexer.lineno += 1
+        return t
     
     def t_ARRAY(self, t):
         r'Array(?=<[INT|FLOAT|STR]>)'
@@ -51,7 +59,7 @@ class LexerPMScript(object):
         return t
 
     def t_ID(self, t):
-        r'[a-zA-Z_][a-zA-Z_0-9]*'
+        r'[a-zA-Z_][a-zA-Z_0-9\.]*'
         t.type = self.RESERVED.get(t.value, 'ID')
         return t
     

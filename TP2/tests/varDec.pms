@@ -1,6 +1,10 @@
-let a: INT = 0;
+let a: INT = 1000;
 let b: STR = "Ola";
 let c: FLOAT = 10.9;
 let arrayInt: Array<INT> = [0, 1, 2, 3];
 let arrayFloat: Array<FLOAT> = [10.9, 199.212, 322.12];
 let arrayString: Array<STR> = ["Olá!", "Tudo Bem?"];
+const inputtext: INT = console.input("Por favor dê um valor para essa variável: ");
+
+c++;
+a = 200;

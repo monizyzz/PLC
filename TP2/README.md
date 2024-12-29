@@ -39,15 +39,8 @@ MutationType           : CONST
    
 // Como temos que garantir a type safety, não podemos fazer recursividade nesse caso
 IntDeclaration         : MutationType ID ':' 'INT' '=' INTVALUE ';'
-                       | ID ':' 'INT' '=' INTVALUE ';'
-                       | ID ':' 'INT' ';'
-
 FloatDeclaration       : MutationType ID ':' 'FLOAT' '=' FLOATVALUE ';'
-                       | ID ':' 'FLOAT' '=' FLOATVALUE ';'
-                       | ID ':' 'FLOAT' ';'
-
 StringDeclaration      : MutationType ID ':' 'STR' '=' STRVALUE ';'
-                       | ID ':' 'STR' '=' STRVALUE ';'
 
 ArrayDeclaration       : CONST ID ':' 'Array' '<' 'INT' '>' '=' '[' ArrayIntDeclaration ']' ';'
                        | CONST ID ':' 'Array' '<' 'FLOAT' '>' '=' '[' ArrayStringDeclaration ']' ';'
