@@ -1,4 +1,10 @@
 pushi 0
-pushi 0.2
+pushf 0.2
 start
+pushi 10
+STOREG x1
+PUSHG 1.2
+PUSHI 1
+ADD
+STOREG x2
 stop

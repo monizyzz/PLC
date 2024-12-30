@@ -1,6 +1,8 @@
 pushi 1000
 pushs Ola
 pushf 10.9
+pushi 0
+pushf 0.0
 pushi 3
 STOREG arrayInt_0
 pushi 2

@@ -54,15 +54,15 @@ def p_ProgramInit(p):
     if len(p) == 3:
         parser.assembly = p[1] + f"start\n{p[2]}stop\n"
     elif len(p) == 2:
-        parser.assembly = f"start\n{p[1]}stop\n"
+        parser.assembly = f"{p[1]}start\nstop\n"
 
 
 def p_Declarations(p):
-    """Declarations : IntDeclaration Declarations
-                    | IntDeclarationInput Declarations
-                    | StringDeclaration Declarations
-                    | FloatDeclaration Declarations
-                    | ArrayDeclaration Declarations
+    """Declarations : Declarations IntDeclaration
+                    | Declarations IntDeclarationInput
+                    | Declarations StringDeclaration
+                    | Declarations FloatDeclaration
+                    | Declarations ArrayDeclaration
                     | Empty"""
     if len(p) == 3:
         p[0] = str(p[1]) + str(p[2])
@@ -80,6 +80,15 @@ def p_IntDeclaration(p):
         parser.success = False
         printError("Error: Variable was already defined before")
     p[0] = f"pushi {int(p[6])}\n" 
+    
+def p_IntDeclaration_NOVALUE(p):
+    """IntDeclaration : MutationType ID ':' INT SEMICOLON"""
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]]['INT'][p[2]] = 0
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
+    p[0] = f"pushi {0}\n"
     
 def p_IntDeclarationInput(p):
     "IntDeclarationInput : MutationType ID ':' INT '=' Input SEMICOLON"
@@ -114,6 +123,15 @@ def p_FloatDeclaration(p):
         parser.success = False
         printError("Error: Variable was already defined before")
     p[0] = f"pushf {float(p[6])}\n"
+    
+def p_FloatDeclaration_NOVALUE(p):
+    """FloatDeclaration : MutationType ID ':' FLOAT SEMICOLON"""
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]]['FLOAT'][p[2]] = float(0)
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
+    p[0] = f"pushf {float(0)}\n"
     
     
 # ------------------------------------------------------------  Array Declaration
