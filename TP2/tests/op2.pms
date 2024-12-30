@@ -1,0 +1,5 @@
+let a1: INT = 5;
+let a2: FLOAT = 9.0;
+let res: INT;
+
+res = a1 + a2 + 6 - 2;

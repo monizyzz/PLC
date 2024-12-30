@@ -1,0 +1,3 @@
+const inputtext: INT = console.input("Por favor dê um valor para essa variável: ");
+
+console.output(inputtext);

@@ -47,26 +47,22 @@ def printVariables():
             for varName in parser.vars[varType][var]:
                 print(f"Registro ({parser.vars[varType][var][varName][1]}) {varType} {varName}: {parser.vars[varType][var][varName][0]}")
 
-# ---------------- Programa ----------------
+# ------------------------------------------------------------  Grammar
+
 def p_ProgramInit(p):
-    "ProgramInit : Declarations Instructions"
+    """ProgramInit : Declarations Instructions
+                   | Instructions
+                   | Declarations"""
+
     parser.assembly = p[1] + f"start\n{p[2]}stop\n"
     
-def p_ProgramInit_NOINST(p):
-    "ProgramInit : Declarations"
-    parser.assembly = f"{p[1]}start\nstop\n"
-    # printError("Error: No instructions were given")
-    
-def p_ProgramInit_NODECL(p):
-    "ProgramInit : Instructions"
-    parser.assembly = f"start\n{p[1]}stop\n"
-    # printError("Error: No declarations were given")
-
 def p_Declarations(p):
     """Declarations : Declarations IntDeclaration
                     | Declarations IntDeclarationInput
                     | Declarations StringDeclaration
+                    | Declarations StringDeclarationInput
                     | Declarations FloatDeclaration
+                    | Declarations FloatDeclarationInput
                     | Declarations ArrayDeclaration
                     | Empty"""
     if len(p) == 3:
@@ -99,7 +95,7 @@ def p_IntDeclaration_NOVALUE(p):
     
 def p_IntDeclarationInput(p):
     "IntDeclarationInput : MutationType ID ':' INT '=' Input SEMICOLON"
-    value = int(input(f"{p[6].strip('\"')}"))
+    value = int(input(f"READ: ")) # simulate input value
     parser.regIndex += 1
     if checkIfVariableAlreadyExists(p[2]) is None:
         parser.vars[p[1]]['INT'][p[2]] = [value, parser.regIndex]
@@ -107,7 +103,7 @@ def p_IntDeclarationInput(p):
         parser.success = False
         printError("Error: Variable was already defined before")
 
-    p[0] = f'{p[6]} READ\nATOI\nSTOREG {p[2]}\n'
+    p[0] = f'{p[6]}READ\nATOI\nSTOREG {parser.vars[p[1]]["INT"][p[2]][1]}\n'
 
 # ------------------------------------------------------------  String Declaration
     
@@ -120,6 +116,28 @@ def p_StringDeclaration(p):
         parser.success = False
         printError("Error: Variable was already defined before")
     p[0] = f"pushs {"".join(p[6].strip('"'))}\n" 
+    
+def p_StringDeclaration_NOVALUE(p):
+    """StringDeclaration : MutationType ID ':' STR SEMICOLON"""
+    parser.regIndex += 1
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]]['STR'][p[2]] = ["", parser.regIndex]
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
+    p[0] = f"pushs {""}\n"
+
+def p_StringDeclarationInput(p):
+    "StringDeclarationInput : MutationType ID ':' STR '=' Input SEMICOLON"
+    value = input(f"READ: ") # simulate input value
+    parser.regIndex += 1
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]]['STR'][p[2]] = [value, parser.regIndex]
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
+
+    p[0] = f'{p[6]}READ\nSTOREG {parser.vars[p[1]]["STR"][p[2]][1]}\n'
   
 # ------------------------------------------------------------  Float Declaration  
     
@@ -141,6 +159,17 @@ def p_FloatDeclaration_NOVALUE(p):
         parser.success = False
         printError("Error: Variable was already defined before")
     p[0] = f"pushf {float(0)}\n"
+    
+def p_FloatDeclarationInput(p):
+    "FloatDeclarationInput : MutationType ID ':' FLOAT '=' Input SEMICOLON"
+    value = float(input(f"READ: ")) # simulate input value
+    parser.regIndex += 1
+    if checkIfVariableAlreadyExists(p[2]) is None:
+        parser.vars[p[1]]['FLOAT'][p[2]] = [value, parser.regIndex]
+    else:
+        parser.success = False
+        printError("Error: Variable was already defined before")
+    p[0] = f'{p[6]}READ\nATOF\nSTOREG {parser.vars[p[1]]["FLOAT"][p[2]][1]}\n'
     
     
 # ------------------------------------------------------------  Array Declaration
@@ -199,7 +228,8 @@ def p_Instructions(p):
     printSuccess(f"Instructions -> {p[1]}")
         
 def p_Instruction(p):
-    """Instruction : Attributions"""
+    """Instruction : Attributions
+                   | Output"""
     p[0] = p[1]
 
 # ------------------------------------------------------------  Attributions
@@ -215,7 +245,7 @@ def p_Attributions(p):
 
 def p_AttributionsIncDec(p):
     """Attributions : Attributions IncDecAttribution SEMICOLON"""
-    p[0] = p[1] + p[2][0]
+    p[0] = p[1] + p[2][0] # p[2] is a tuple with the assembly code and the variable name
     
     
 def p_NormalAttribution(p):
@@ -327,6 +357,10 @@ def p_Expr_Int(p):
     "Expr : INTVALUE"
     p[0] = f"PUSHI {p[1]}\n"
     
+def p_Expr_Float(p):
+    "Expr : FLOATVALUE"
+    p[0] = f"PUSHF {p[1]}\n"
+    
 arith_map = {
     "+": "ADD\n",
     "-": "SUB\n",
@@ -360,7 +394,18 @@ def p_MutationType(p):
 
 def p_Input(p):
     """Input : INPUT '(' STRINGVALUE ')'"""
-    p[0] = f'{p[3]}'
+    p[0] = f'PUSHS {p[3]}\nWRITES\n'
+
+# ------------------------------------------------------------  Output
+
+def p_Output(p):
+    """Output : PRINT '(' ID ')' SEMICOLON"""
+    mutationType = checkIfVariableAlreadyExists(p[3])
+    varType = getVariableType(p[3])
+    
+    value = parser.vars[mutationType][varType][p[3]][0]
+    
+    p[0] = f"PUSHG {parser.vars[mutationType][varType][p[3]][1]}\nWRITE{'I' if varType == 'INT' else 'F' if varType == 'FLOAT' else 'S'}\n"    
 
 # ------------------------------------------------------------  Error
 

@@ -1,0 +1,9 @@
+PUSHS "Por favor dê um valor para essa variável: "
+WRITES
+READ
+ATOI
+STOREG 0
+start
+PUSHG 0
+WRITEI
+stop
