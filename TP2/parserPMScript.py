@@ -51,7 +51,10 @@ def p_ProgramInit(p):
     """ProgramInit : Declarations Attributions
                    | Attributions
                    | Declarations"""
-    parser.assembly = p[1] + f"start\n{p[2]}stop\n"
+    if len(p) == 3:
+        parser.assembly = p[1] + f"start\n{p[2]}stop\n"
+    elif len(p) == 2:
+        parser.assembly = f"start\n{p[1]}stop\n"
 
 
 def p_Declarations(p):
