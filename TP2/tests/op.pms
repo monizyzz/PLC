@@ -1,0 +1,21 @@
+let a1: INT = 5;
+let a2: INT;
+let a3: INT = 2;
+let a4: INT = 20;
+let a5: INT = 25;
+let b: INT = console.input("Por favor dê um valor inteiro à variável b: ");
+
+a1 = a1 + b;
+console.log(a1);
+
+a2 = a2 - b;
+console.log(a2);
+
+a3 = a3 * b;
+console.log(a3);
+
+a4 = a4 / b;
+console.log(a4);
+
+a5 = a5 % b;
+console.log(a4);

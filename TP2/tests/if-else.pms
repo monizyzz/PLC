@@ -1,0 +1,8 @@
+let a: INT = 5;
+let b: INT = console.input("Por favor dê um valor inteiro à variável b: ");
+
+if (a > b) {
+    console.log("a é maior que b");
+} else {
+    console.log("a é menor ou igual a b");
+}
