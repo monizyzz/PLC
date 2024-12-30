@@ -48,14 +48,18 @@ def printVariables():
 
 # ---------------- Programa ----------------
 def p_ProgramInit(p):
-    """ProgramInit : Declarations Attributions
-                   | Attributions
-                   | Declarations"""
-    if len(p) == 3:
-        parser.assembly = p[1] + f"start\n{p[2]}stop\n"
-    elif len(p) == 2:
-        parser.assembly = f"{p[1]}start\nstop\n"
-
+    "ProgramInit : Declarations Instructions"
+    parser.assembly = p[1] + f"start\n{p[2]}stop\n"
+    
+def p_ProgramInit_NOINST(p):
+    "ProgramInit : Declarations"
+    parser.assembly = f"{p[1]}start\nstop\n"
+    printError("Error: No instructions were given")
+    
+def p_ProgramInit_NODECL(p):
+    "ProgramInit : Instructions"
+    parser.assembly = f"start\n{p[1]}stop\n"
+    printError("Error: No declarations were given")
 
 def p_Declarations(p):
     """Declarations : Declarations IntDeclaration
@@ -178,11 +182,25 @@ def p_ArrayStringDeclarationAux(p):
     else:
         p[0] = [p[1].strip('"')]
 
+# ------------------------------------------------------------  Instructions
+def p_Instructions(p):
+    """Instructions : Instructions Instruction
+                    | Instruction"""
+    if len(p) == 3:
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = p[1]
+        
+def p_Instruction(p):
+    """Instruction : Attributions"""
+    p[0] = p[1]
+
 # ------------------------------------------------------------  Attributions
 
-def p_Atributions(p):
-    """Attributions : Attributions NormalAttribution
-                    | Attributions IncDecAttribution
+def p_Attributions(p):
+    """Attributions : Attributions NormalAttribution SEMICOLON
+                    | Attributions IncDecAttribution SEMICOLON
+                    | Attributions Expression SEMICOLON
                     | Empty"""
     if len(p) == 3:
         p[0] = p[1] + p[2]
@@ -190,9 +208,9 @@ def p_Atributions(p):
         p[0] = ""
     
 def p_NormalAttribution(p):
-    """NormalAttribution : ID '=' INTVALUE SEMICOLON
-                         | ID '=' STRINGVALUE SEMICOLON
-                         | ID '=' FLOATVALUE SEMICOLON"""
+    """NormalAttribution : ID '=' INTVALUE
+                         | ID '=' STRINGVALUE
+                         | ID '=' FLOATVALUE"""
     mutationType = checkIfVariableAlreadyExists(p[1])
     varType = getVariableType(p[1])
     
@@ -230,8 +248,8 @@ def p_NormalAttribution(p):
         printError("Error: Variable was not defined before")
         
 def p_IncDecAttribution(p):
-    """IncDecAttribution : ID DEC SEMICOLON
-                         | ID INC SEMICOLON"""
+    """IncDecAttribution : ID DEC
+                         | ID INC"""
     mutationType = checkIfVariableAlreadyExists(p[1])
     varType = getVariableType(p[1])
     op = "ADD" if p[2] == "++" else "SUB"
@@ -264,7 +282,49 @@ def p_IncDecAttribution(p):
     else:
         parser.success = False
         printError("Error: Variable was not defined before")
+        
+def p_Expression(p):
+    "Expression : ID '=' Expr"        
+    mutationType = checkIfVariableAlreadyExists(p[1])
+    varType = getVariableType(p[1])
+    
+    if mutationType is not None:
+        if mutationType == "const":
+            parser.success = False
+            printError("Error: Cannot change value of a constant variable")
+        p[0] = f"{p[3]}STOREG {p[1]}\n"
+    # If variable was not defined before, raise an error
+    else:
+        parser.success = False
+        printError("Error: Variable was not defined before")
+    
+# ------------------------------------------------------------  Expr
 
+def p_Expr_Var_Inc(p):
+    """Expr : ID 
+            | IncDecAttribution"""
+    p[0] = p[1]
+    
+def p_Expr_Int(p):
+    "Expr : INTVALUE"
+    p[0] = f"PUSHI {p[1]}\n"
+    
+arith_map = {
+    "+": "ADD\n",
+    "-": "SUB\n",
+    "*": "MUL\n",
+    "/": "DIV\n",
+    "%": "MOD\n",
+}
+
+def p_Expr_Arith(p):
+    """Expr : Expr '+' Expr
+            | Expr '-' Expr
+            | Expr '*' Expr
+            | Expr '/' Expr
+            | Expr '%' Expr"""
+    p[0] = f'{p[1]}{p[3]}{arith_map[p[2]]}'
+    
 # ------------------------------------------------------------  Empty 
 
 def p_Empty(p):

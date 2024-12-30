@@ -1,0 +1,5 @@
+pushi 5
+start
+pushi 6
+STOREG a1
+stop

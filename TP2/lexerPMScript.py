@@ -75,7 +75,7 @@ class LexerPMScript(object):
         '/',
         '%',
         '{', 
-        '}'
+        '}',
     ]
 
     def t_SEMICOLON(self, t):
