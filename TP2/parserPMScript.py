@@ -50,12 +50,19 @@ def printVariables():
 # ------------------------------------------------------------  Grammar
 
 def p_ProgramInit(p):
-    """ProgramInit : Declarations Instructions
-                   | Instructions
-                   | Declarations"""
-
+    "ProgramInit : Declarations Instructions"
     parser.assembly = p[1] + f"start\n{p[2]}stop\n"
     
+def p_ProgramInit_NOINST(p):
+    "ProgramInit : Declarations"
+    parser.assembly = f"{p[1]}start\nstop\n"
+    # printError("Error: No instructions were given")
+    
+def p_ProgramInit_NODECL(p):
+    "ProgramInit : Instructions"
+    parser.assembly = f"start\n{p[1]}stop\n"
+    # printError("Error: No declarations were given")
+
 def p_Declarations(p):
     """Declarations : Declarations IntDeclaration
                     | Declarations IntDeclarationInput
