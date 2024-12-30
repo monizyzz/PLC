@@ -345,7 +345,8 @@ def p_Expression(p):
 
 def p_Expr_Var_Inc(p):
     """Expr : IncDecAttribution"""
-    p[0] = p[1][0] + f"PUSHG {parser.vars['let'][getVariableType(p[1][1])][p[1][1]][1]}\n"
+    varName = p[1][1]
+    p[0] = p[1][0] + f"PUSHG {parser.vars['let'][getVariableType(varName)][varName][1]}\n"
     
 def p_Expr_Var(p):
     "Expr : ID"
