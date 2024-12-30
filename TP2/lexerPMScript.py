@@ -1,16 +1,10 @@
 import ply.lex as lex
 import sys
 
-INT = 'INT'
-FLOAT = 'FLOAT'
-ARRAY = 'ARRAY'
-STR = 'STR'
-
 class LexerPMScript(object):
     def __init__(self, debug = 0, optimize = 0, reflags = 0):
         self.lexer = lex.lex(module=self, debug=debug, optimize=optimize, reflags=reflags)
         self.lexer.lineno = 1
-        self.var = {}
     
     tokens = [
         'INTVALUE',
@@ -19,15 +13,10 @@ class LexerPMScript(object):
         'INC',
         'DEC',
         'ID',
-        'VARINT',
-        'VARFLOAT',
-        'VARSTRING',
-        'VARARRAY',
         'GEQUAL',
         'LEQUAL',
         'EQUAL',
         'DIFF',
-        'LINE'
     ]
     
     RESERVED = {
@@ -109,25 +98,12 @@ class LexerPMScript(object):
     def t_ID(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9\.]*'
         t.type = self.RESERVED.get(t.value, 'ID')
-        v = self.var.get(t.value, None)
-        if v is not None:
-            type = v[1]
-            if type == INT:
-                t.type = 'VARINT'
-            elif type == FLOAT:
-                t.type = 'VARFLOAT'
-            elif type == ARRAY:
-                t.type = 'VARARRAY'
-            elif type == STR:
-                t.type = 'VARSTRING'
         return t
     
     def t_NEWLINE(self, t):
         r'\n+'
         t.lexer.lineno += len(t.value)
         return t
-    
-    t_LINE = r'\"(^\"|[^"])*\"'
     
     t_ignore = ' \t\n'
     
