@@ -236,7 +236,8 @@ def p_Instructions(p):
         
 def p_Instruction(p):
     """Instruction : Attributions
-                   | Output"""
+                   | Output
+                   | If"""
     p[0] = p[1]
 
 # ------------------------------------------------------------  Attributions
@@ -385,6 +386,45 @@ def p_Expr_Arith(p):
             | Expr '%' Expr"""
     p[0] = f'{p[1]}{p[3]}{arith_map[p[2]]}'
     
+    
+# ------------------------------------------------------------  If Statement
+
+condition_map ={
+    ">": "SUP\n",
+    "<": "INF\n",
+    ">=": "SUPEQ\n",
+    "<=": "INFEQ\n",
+    "==": "EQUAL\n",
+    "/=": "EQUAL\nNOT\n",
+    "or": "ADD\nPUSHI 1\nSUPEQ\n",
+    "and": "ADD\nPUSHI 2\nSUPEQ\n",
+}
+
+def p_Cond(p):
+    """Cond : Expr '<' Expr
+            | Expr '>' Expr
+            | Expr GEQUAL Expr
+            | Expr LEQUAL Expr
+            | Expr EQUAL Expr
+            | Expr DIFF Expr
+            | Expr OR Expr
+            | Expr AND Expr"""
+    p[0] = f'{p[1]}{p[3]}{condition_map[p[2]]}'
+    
+def p_Cond_NOT(p):
+    "Cond : NOT Cond"
+    p[0] = f'{p[2]}NOT\n'
+
+def p_If(p):
+    "If : IF '(' Cond ')' '{' Instructions '}'"
+    p[0] = f'{p[3]}JZ label{p.parser.labels}\n{p[6]}label{p.parser.labels}: NOP\n'
+    p.parser.labels += 1
+
+def p_If_Else(p):
+    "If : IF '(' Cond ')' '{' Instructions '}' ELSE '{' Instructions '}'"
+    p[0] = f'{p[3]}JZ label{p.parser.labels}\n{p[6]}JUMP label{p.parser.labels}f\nlabel{p.parser.labels}: NOP\n{p[10]}label{p.parser.labels}f: NOP\n'
+    p.parser.labels += 1
+    
 # ------------------------------------------------------------  Empty 
 
 def p_Empty(p):
@@ -413,7 +453,11 @@ def p_Output(p):
     
     value = parser.vars[mutationType][varType][p[3]][0]
     
-    p[0] = f"PUSHG {parser.vars[mutationType][varType][p[3]][1]}\nWRITE{'I' if varType == 'INT' else 'F' if varType == 'FLOAT' else 'S'}\n"    
+    p[0] = f"PUSHG {parser.vars[mutationType][varType][p[3]][1]}\nWRITE{'I' if varType == 'INT' else 'F' if varType == 'FLOAT' else 'S'}\n"   
+    
+def p_OutputString(p):
+    """Output : PRINT '(' STRINGVALUE ')' SEMICOLON"""
+    p[0] = f"PUSHS {p[3]}\nWRITES\n"
 
 # ------------------------------------------------------------  Error
 
@@ -432,6 +476,7 @@ parser.lineno = 1
 parser.success = True
 parser.assembly = ""
 parser.regIndex = -1
+parser.labels = 0
 parser.vars = {
     "const": {
         "INT": {},

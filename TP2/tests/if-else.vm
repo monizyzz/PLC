@@ -1,0 +1,19 @@
+pushi 5
+PUSHS "Por favor dê um valor inteiro à variável b: "
+WRITES
+READ
+ATOI
+STOREG 1
+start
+PUSHG 0
+PUSHG 1
+SUP
+JZ label0
+PUSHS "a é maior que b"
+WRITES
+JUMP label0f
+label0: NOP
+PUSHS "a é menor ou igual a b"
+WRITES
+label0f: NOP
+stop

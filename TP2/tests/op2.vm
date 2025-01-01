@@ -1,0 +1,13 @@
+pushi 5
+pushf 9.0
+pushi 0
+start
+PUSHG 0
+PUSHG 1
+PUSHI 6
+PUSHI 2
+SUB
+ADD
+ADD
+STOREG 2
+stop
