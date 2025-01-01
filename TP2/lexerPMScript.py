@@ -25,10 +25,11 @@ class LexerPMScript(object):
         'STR': 'STR',
         'const': 'CONST',
         'let': 'LET',
+        "while" : "WHILE",
         'Array': 'ARRAY',
         'if': 'IF',
         'else': 'ELSE',
-        'for': 'FOR',
+        'do': 'DO',
         'while': 'WHILE',
         'console.output': 'PRINT', # podiamos ter algo para PRINTLN, pois existe isso na VM, tipo console.logln ?
         'console.input': 'INPUT',
@@ -77,6 +78,14 @@ class LexerPMScript(object):
         '{', 
         '}',
     ]
+    
+    def t_DO(self, t):
+        r'do(?=[\{| ])'
+        return t
+    
+    def t_WHILE(self, t):
+        r'while(?=[\(| ])'
+        return t
 
     def t_SEMICOLON(self, t):
         r';'

@@ -1,0 +1,6 @@
+let a: INT = 3;
+
+while (a > 0) {
+    a--;
+    console.output(a);
+}

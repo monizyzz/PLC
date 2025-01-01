@@ -237,7 +237,8 @@ def p_Instructions(p):
 def p_Instruction(p):
     """Instruction : Attributions
                    | Output
-                   | If"""
+                   | If
+                   | Loop"""
     p[0] = p[1]
 
 # ------------------------------------------------------------  Attributions
@@ -423,6 +424,23 @@ def p_If(p):
 def p_If_Else(p):
     "If : IF '(' Cond ')' '{' Instructions '}' ELSE '{' Instructions '}'"
     p[0] = f'{p[3]}JZ label{p.parser.labels}\n{p[6]}JUMP label{p.parser.labels}f\nlabel{p.parser.labels}: NOP\n{p[10]}label{p.parser.labels}f: NOP\n'
+    p.parser.labels += 1
+    
+# ------------------------------------------------------------  Loop
+
+def p_Loop(p):
+    """Loop : While
+            | DoWhile"""
+    p[0] = p[1]
+
+def p_Do_While(p):
+    "DoWhile : DO '{' Instructions '}' WHILE '(' Cond ')' ';'"
+    p[0] = f'label{p.parser.labels}:\n{p[3]}{p[7]}NOT\nJZ label{p.parser.labels}\n'
+    p.parser.labels += 1
+
+def p_While(p):
+    "While : WHILE '(' Cond ')' '{' Instructions '}'"
+    p[0] = f'label{p.parser.labels}c: NOP\n{p[3]}JZ label{p.parser.labels}f\n{p[6]}JUMP label{p.parser.labels}c\nlabel{p.parser.labels}f: NOP\n'
     p.parser.labels += 1
     
 # ------------------------------------------------------------  Empty 
