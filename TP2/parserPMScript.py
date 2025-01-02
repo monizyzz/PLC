@@ -396,7 +396,7 @@ condition_map ={
     ">=": "SUPEQ\n",
     "<=": "INFEQ\n",
     "==": "EQUAL\n",
-    "/=": "EQUAL\nNOT\n",
+    "!=": "EQUAL\nNOT\n",
     "or": "ADD\nPUSHI 1\nSUPEQ\n",
     "and": "ADD\nPUSHI 2\nSUPEQ\n",
 }

@@ -1,0 +1,6 @@
+let a: INT = 5;
+let b: INT = 4;
+
+if (a > 10 || b < 5) {
+    console.log("Pelo menos uma das condições é verdadeira.");
+}
