@@ -2,8 +2,8 @@ let a: INT = 5;
 let b: INT = 5;
 let c: INT = 5;
 
-if (a == b && b == c) {
-    console.output("triângulo é equilátero");
-} else {
+if (not(a == b && b == c)) {
     console.output("triângulo não é equilátero");
+} else {
+    console.output("triângulo é equilátero");
 }

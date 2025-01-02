@@ -1,0 +1,8 @@
+let a: INT = 12;
+let b: INT = 5;
+
+if (a > 10 || b > 10) {
+    console.output("a maior que 10 ou b menor que 10");
+} else {
+    console.output("nem a nem b são maiores que 10");
+}

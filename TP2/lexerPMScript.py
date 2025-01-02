@@ -31,7 +31,7 @@ class LexerPMScript(object):
         'else': 'ELSE',
         'do': 'DO',
         'while': 'WHILE',
-        'console.output': 'PRINT', # podiamos ter algo para PRINTLN, pois existe isso na VM, tipo console.logln ?
+        'console.output': 'PRINT',
         'console.input': 'INPUT',
         ';': 'SEMICOLON',
         'or': 'OR',

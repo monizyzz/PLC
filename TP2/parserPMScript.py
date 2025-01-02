@@ -397,8 +397,8 @@ condition_map ={
     "<=": "INFEQ\n",
     "==": "EQUAL\n",
     "!=": "EQUAL\nNOT\n",
-    "or": "ADD\nPUSHI 1\nSUPEQ\n",
-    "and": "ADD\nPUSHI 2\nSUPEQ\n",
+    "or": "ADD\n",
+    "and": "MUL\n",
 }
 
 def p_Cond(p):
@@ -408,13 +408,18 @@ def p_Cond(p):
             | Expr LEQUAL Expr
             | Expr EQUAL Expr
             | Expr DIFF Expr
-            | Expr OR Expr
-            | Expr AND Expr"""
-    p[0] = f'{p[1]}{p[3]}{condition_map[p[2]]}'
+            | Cond OR Cond
+            | Cond AND Cond"""
+    if p[2] in ['&&', '||']:
+        # Para operações lógicas
+        p[0] = f'{p[1]}{p[3]}{condition_map["and" if p[2] == "&&" else "or"]}'
+    else:
+        # Para operações relacionais
+        p[0] = f'{p[1]}{p[3]}{condition_map[p[2]]}'
     
 def p_Cond_NOT(p):
-    "Cond : NOT Cond"
-    p[0] = f'{p[2]}NOT\n'
+    "Cond : NOT '(' Cond ')'"
+    p[0] = f'{p[3]}NOT\n'
 
 def p_If(p):
     "If : IF '(' Cond ')' '{' Instructions '}'"

@@ -1,0 +1,19 @@
+pushi 12
+pushi 5
+start
+PUSHG 0
+PUSHI 10
+SUP
+PUSHG 1
+PUSHI 10
+SUP
+ADD
+JZ label0
+PUSHS "a maior que 10 ou b menor que 10"
+WRITES
+JUMP label0f
+label0: NOP
+PUSHS "nem a nem b são maiores que 10"
+WRITES
+label0f: NOP
+stop
