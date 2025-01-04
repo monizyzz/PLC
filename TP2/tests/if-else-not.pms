@@ -1,9 +1,21 @@
-let a: INT = 5;
-let b: INT = 5;
-let c: INT = 5;
+const a: INT = console.input("Coloque um valor inteiro para a: \n");
+const b: INT = console.input("Coloque um valor inteiro para b: \n");
+const c: INT = console.input("Coloque um valor inteiro para c: \n");
 
 if (not(a == b && b == c)) {
-    console.output("triângulo não é equilátero");
+    console.output("triângulo não é equilátero\n");
 } else {
-    console.output("triângulo é equilátero");
+    console.output("triângulo é equilátero\n");
+}
+
+if (not(a == b || b == c || a == c)) {
+    console.output("triângulo não é isósceles\n");
+} else {
+    console.output("triângulo é isósceles\n");
+}
+
+if (a != b && b != c && a != c) {
+    console.output("triângulo é escaleno\n");
+} else {
+    console.output("triângulo não é escaleno\n");
 }

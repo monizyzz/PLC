@@ -11,6 +11,8 @@ SUB
 STOREG 0
 PUSHG 0
 WRITEI
+PUSHS "\n"
+WRITES
 JUMP label0c
 label0f: NOP
 stop

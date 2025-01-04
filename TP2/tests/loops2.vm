@@ -1,0 +1,17 @@
+pushi 3
+start
+label0:
+PUSHG 0
+WRITEI
+PUSHS "\n"
+WRITES
+PUSHG 0
+PUSHI 1
+ADD
+STOREG 0
+PUSHG 0
+PUSHI 7
+INF
+NOT
+JZ label0
+stop

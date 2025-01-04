@@ -439,7 +439,7 @@ def p_Loop(p):
     p[0] = p[1]
 
 def p_Do_While(p):
-    "DoWhile : DO '{' Instructions '}' WHILE '(' Cond ')' ';'"
+    "DoWhile : DO '{' Instructions '}' WHILE '(' Cond ')' SEMICOLON"
     p[0] = f'label{p.parser.labels}:\n{p[3]}{p[7]}NOT\nJZ label{p.parser.labels}\n'
     p.parser.labels += 1
 
