@@ -37,6 +37,8 @@ class LexerPMScript(object):
         'or': 'OR',
         'and': 'AND',
         'not': 'NOT',
+        'call': 'CALL',
+        'return': 'RETURN',
     }
         
     tokens += list(RESERVED.values())
@@ -83,6 +85,14 @@ class LexerPMScript(object):
         r'do(?=[\{| ])'
         return t
     
+    def t_RETURN(self, t):
+        r'return(?=\s)'
+        return t
+    
+    def t_CALL(self, t):
+        r'\w+\(\)'
+        return t
+        
     def t_WHILE(self, t):
         r'while(?=[\(| ])'
         return t
