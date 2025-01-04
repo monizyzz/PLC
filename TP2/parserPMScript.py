@@ -71,12 +71,42 @@ def p_Declarations(p):
                     | Declarations FloatDeclaration
                     | Declarations FloatDeclarationInput
                     | Declarations ArrayDeclaration
+                    | Declarations FunctionDeclaration
                     | Empty"""
     if len(p) == 3:
         p[0] = str(p[1]) + str(p[2])
     else:
         p[0] = ""
     parser.lineno += 1
+    
+# -----------------------------------------------------------  Function Declaration
+
+def p_FunctionDeclaration(p):
+    "FunctionDeclaration : CONST ID '=' '(' ')' '=' '>' '{' Instructions '}'"
+    name = f'function{len(p.parser.functions)}'
+    p.parser.functions[p[2]+"()"] = name
+    body = p[9]
+    p[0] = f'{name}:\n{body}\n'
+    
+def p_Call(p):
+    "Call : CALL SEMICOLON"
+    p[0] = f'PUSHA {p.parser.functions[p[1]]}\nCALL\n'
+    
+def p_CallWithReturn(p):
+    "Call : RETURN CALL SEMICOLON"
+    p[0] = f'PUSHA {p.parser.functions[p[2]]}\nCALL\n'
+    
+def p_Return(p):
+    "Return : RETURN SEMICOLON"
+    p[0] = "RETURN\n"
+    
+def p_ReturnValue(p):
+    "Return : RETURN Expr SEMICOLON"
+    p[0] = f'{p[2]}RETURN\n'
+
+def p_ReturnValueCall(p):
+    "Return : RETURN Call"
+    p[0] = f'{p[2]}RETURN\n'
     
 # ------------------------------------------------------------  Int Declaration
 
@@ -237,6 +267,8 @@ def p_Instructions(p):
 def p_Instruction(p):
     """Instruction : Attributions
                    | Output
+                   | Call
+                   | Return
                    | If
                    | Loop"""
     p[0] = p[1]
@@ -500,6 +532,7 @@ parser.success = True
 parser.assembly = ""
 parser.regIndex = -1
 parser.labels = 0
+parser.functions = {}
 parser.vars = {
     "const": {
         "INT": {},

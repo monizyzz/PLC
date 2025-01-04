@@ -1,0 +1,17 @@
+function0:
+PUSHS "ola"
+WRITES
+PUSHI 10
+RETURN
+
+function1:
+PUSHS "ahahaha"
+WRITES
+PUSHA function0
+CALL
+RETURN
+
+start
+PUSHA function1
+CALL
+stop
