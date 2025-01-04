@@ -1,0 +1,19 @@
+let a1: INT = 5;
+let a2: FLOAT = 9.0;
+let a3: INT = 2;
+let a4: INT = 20;
+let a5: INT = 25;
+let b: INT = 5;
+let c: INT = 7;
+
+a1 = a1 + b;
+
+a2 = a2 - 5;
+
+a3 = a3 * b--;
+
+a4 = a4 / b;
+
+a5 = a5 % b;
+
+c = a1 + a2 + 6 - 2;

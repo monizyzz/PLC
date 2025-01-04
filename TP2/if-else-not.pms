@@ -2,7 +2,7 @@ let a: INT = console.input("Coloque um valor inteiro para a: \n");
 let b: INT = console.input("Coloque um valor inteiro para b: \n");
 let c: INT = console.input("Coloque um valor inteiro para c: \n");
 
-if (not(a == b && b == c)) {
+if (a == b && b == c) {
     console.output("triângulo não é equilátero\n");
 } else {
     console.output("triângulo é equilátero\n");

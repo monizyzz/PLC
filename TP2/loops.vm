@@ -1,0 +1,18 @@
+pushi 3
+start
+label0c: NOP
+PUSHG 0
+PUSHI 0
+SUP
+JZ label0f
+PUSHG 0
+PUSHI 1
+SUB
+STOREG 0
+PUSHG 0
+WRITEI
+PUSHS "\n"
+WRITES
+JUMP label0c
+label0f: NOP
+stop

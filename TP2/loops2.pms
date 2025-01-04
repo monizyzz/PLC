@@ -1,0 +1,14 @@
+let N: INT = console.input("Digite um número: ");
+let soma: INT = 0;
+let i: INT = 1;
+
+do {
+    soma = soma + i;
+    i++;
+} while (i <= N);
+
+console.output("\n");
+console.output("A soma dos primeiros ");
+console.output(N);
+console.output(" números é: ");
+console.output(soma);

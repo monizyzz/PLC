@@ -1,8 +1,6 @@
 from lexerPMScript import lexer, LexerPMScript
-import ast
 import ply.yacc as yacc
 import sys
-import tabulate
 
 # ------------------------------------------------------------- Auxiliar Functions
 
@@ -548,7 +546,7 @@ parser.vars = {
 
 # Read file
 content = ""
-with open(f"tests/{sys.argv[1]}.pms") as f:
+with open(f"{sys.argv[1]}.pms") as f:
     content = f.read()
 
 
@@ -558,7 +556,7 @@ parser.parse(content, lexer=lexer.lexer)
 
 if parser.success:
     print("Ficheiro lido com sucesso")
-    with open(f'tests/{sys.argv[1]}.vm', 'w+') as f_out:
+    with open(f'{sys.argv[1]}.vm', 'w+') as f_out:
         f_out.write(parser.assembly)
         f_out.close()
     print("Código assembly gerado e guardado.")

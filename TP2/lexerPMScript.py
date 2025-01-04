@@ -133,7 +133,7 @@ class LexerPMScript(object):
 
 content = ""
 
-with open(f"tests/{sys.argv[1]}.pms") as f:
+with open(f"{sys.argv[1]}.pms") as f:
     content = f.read()
 
 lexer = LexerPMScript()

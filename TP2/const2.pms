@@ -1,0 +1,9 @@
+let a: INT = 1000;
+let b: STR = "Ola";
+let c: FLOAT = 10.9;
+const d: INT;
+let f: FLOAT;
+const inputtext: INT = console.input("Por favor dê um valor para essa variável: ");
+
+c++;
+a = 200;
