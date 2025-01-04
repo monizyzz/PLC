@@ -1,17 +1,33 @@
-pushi 3
+PUSHS "Digite um número: "
+WRITES
+READ
+ATOI
+STOREG 0
+pushi 0
+pushi 1
 start
 label0:
-PUSHG 0
-WRITEI
-PUSHS "\n"
-WRITES
-PUSHG 0
+PUSHG 1
+PUSHG 2
+ADD
+STOREG 1
+PUSHG 2
 PUSHI 1
 ADD
-STOREG 0
+STOREG 2
+PUSHG 2
 PUSHG 0
-PUSHI 7
-INF
+INFEQ
 NOT
 JZ label0
+PUSHS "\n"
+WRITES
+PUSHS "A soma dos primeiros "
+WRITES
+PUSHG 0
+WRITEI
+PUSHS " números é: "
+WRITES
+PUSHG 1
+WRITEI
 stop

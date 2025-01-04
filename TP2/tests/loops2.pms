@@ -1,38 +1,14 @@
-let NF: INT;
-let NT: INT;
-let NTP: INT;
-let NTP1: INT;
-let NTP2: INT;
-let opcao: INT;
+let N: INT = console.input("Digite um número: ");
+let soma: INT = 0;
+let i: INT = 1;
 
 do {
-    console.output("Será que passava a PLC? Se tivesse... \n");
-    
-    console.output("Nota teste: ");
-    NT = console.input();
-    console.output("\n");
-    
-    console.output("Nota trabalho prático 1: ");
-    NTP1 = console.input();
-    console.output("\n");
-    
-    console.output("Nota trabalho prático 2: ");
-    NTP2 = console.input();
-    console.output("\n");
+    soma = soma + i;
+    i++;
+} while (i <= N);
 
-    NTP = (NTP1 + NTP2) / 2;
-
-    NF = 0.6 * NT + 0.4 * NTP;
-    if (NT >= 10) {
-        console.output("Passava com nota: ");
-        console.output(NF);
-    } else {
-        console.output("Não passava a PLC ficava com a nota: ");
-        console.output(NF);
-    }
-
-    console.output("\n");
-    opcao = console.output("Deseja continuar? (1 - Sim, 0 - Não): ");
-    console.output("\n");
-
-} while (opcao == 1);
+console.output("\n");
+console.output("A soma dos primeiros ");
+console.output(N);
+console.output(" números é: ");
+console.output(soma);
