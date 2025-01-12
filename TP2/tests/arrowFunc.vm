@@ -1,17 +1,17 @@
+pushi 10
 function0:
-PUSHS "ola"
+PUSHS "Resposta de a + 10: "
 WRITES
+PUSHG 0
 PUSHI 10
-RETURN
-
-function1:
-PUSHS "ahahaha"
-WRITES
-PUSHA function0
-CALL
+ADD
+STOREG 0
+PUSHG 0
+WRITEI
+PUSHG 0
 RETURN
 
 start
-PUSHA function1
+PUSHA function0
 CALL
 stop

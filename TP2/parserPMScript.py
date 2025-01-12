@@ -4,6 +4,8 @@ import ply.yacc as yacc
 import sys
 import tabulate
 
+
+
 # ------------------------------------------------------------- Auxiliar Functions
 
 def is_float(value):
@@ -79,10 +81,18 @@ def p_Declarations(p):
         p[0] = ""
     parser.lineno += 1
     
+
+# ------------------------------------------------------------  MutationType 
+
+def p_MutationType(p):
+    """MutationType : CONST
+                    | LET"""
+    p[0] = p[1]
+
 # -----------------------------------------------------------  Function Declaration
 
 def p_FunctionDeclaration(p):
-    "FunctionDeclaration : CONST ID '=' '(' ')' '=' '>' '{' Instructions '}'"
+    "FunctionDeclaration : FUNC ID '=' '(' ')' '=' '>' '{' Instructions '}'"
     name = f'function{len(p.parser.functions)}'
     p.parser.functions[p[2]+"()"] = name
     body = p[9]
@@ -485,13 +495,6 @@ def p_While(p):
 def p_Empty(p):
     "Empty : "
     pass
-
-# ------------------------------------------------------------  MutationType 
-
-def p_MutationType(p):
-    """MutationType : CONST
-                    | LET"""
-    p[0] = p[1]
     
 # ------------------------------------------------------------  Input
 

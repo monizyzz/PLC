@@ -1,14 +1,11 @@
-const test = () => {
-    console.output("ola");
+let a: INT = 10;
 
-    return 10;
+func test = () => {
+    console.output("Resposta de a + 10: ");
+    a = a + 10;
+    console.output(a);
+
+    return a;
 }
 
-
-const rec = () => {
-    console.output("ahahaha");
-
-    return test();
-}
-
-rec();
+test();

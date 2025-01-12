@@ -39,6 +39,7 @@ class LexerPMScript(object):
         'not': 'NOT',
         'call': 'CALL',
         'return': 'RETURN',
+        'func': 'FUNC',
     }
         
     tokens += list(RESERVED.values())
@@ -83,6 +84,10 @@ class LexerPMScript(object):
     
     def t_DO(self, t):
         r'do(?=[\{| ])'
+        return t
+    
+    def t_FUNC(self, t):
+        r'func(?=\s)'
         return t
     
     def t_RETURN(self, t):
